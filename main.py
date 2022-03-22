@@ -31,6 +31,12 @@ len_fold=y.shape[0]//n_fold  #be careful if not perfect multiple
 RMSE=np.zeros((len(lda_list),n_fold))
 w_opt_list=np.zeros((len(lda_list),n_fold,x.shape[1]))
 for i,lda in enumerate(lda_list):
+    try:
+        df_w = pd.read_csv(f'./task1a/w_opt_lda={lda}.csv', header=None)
+        w_init_list = df_w.to_numpy()
+    except:
+        w_init_list = np.ones((n_fold,x.shape[1]))
+
     for k in tqdm(range(n_fold)):
         y_k=np.concatenate((y[:k*len_fold], y[(k+1)*len_fold:]))
         x_k=np.concatenate((x[:k*len_fold], x[(k+1)*len_fold:]))
@@ -40,7 +46,7 @@ for i,lda in enumerate(lda_list):
         learning_rate = 0.9*eta
         tol = 1e-10
         n_steps = 100000
-        w_init = np.ones(13)
+        w_init = w_init_list[k]
         normalize = False
 
         results = gradient_descent_momentum(obj, w_init, learning_rate=learning_rate, tol=tol, n_steps=n_steps, normalize=normalize)
