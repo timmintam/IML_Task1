@@ -42,8 +42,8 @@ for i,lda in enumerate(lda_list):
         x_k=np.concatenate((x[:k*len_fold], x[(k+1)*len_fold:]))
         obj = ToyObjective(x_k,y_k,lda)
         egv,evec=np.linalg.eig(np.transpose(x_k)@x_k)
-        eta=1/max(egv)
-        learning_rate = 0.9*eta
+        eta=1/(max(egv)+lda)
+        learning_rate = 0.999*eta
         tol = 1e-10
         n_steps = 100000
         w_init = w_init_list[k]
@@ -58,6 +58,8 @@ for i,lda in enumerate(lda_list):
 
         y_pred=x_test@w_opt
         RMSE[i,k]= mean_squared_error(y_test, y_pred)**0.5
+
+        print(obj.grad(w_opt))
 
     pd.DataFrame(w_opt_list[i]).to_csv(f'./task1a/w_opt_lda={lda}.csv', header=None, index=None)
 
