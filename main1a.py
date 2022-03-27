@@ -21,7 +21,7 @@ for i,lda in enumerate(lda_list):
     for k in range(n_fold):
         # mask for 1 fold (remove it from traing data and test results on it)
         mask = np.ones(len(y), dtype=bool)
-        mask[k::10] = False
+        mask[k::n_fold] = False
 
         # k training set
         y_k = y[mask]
